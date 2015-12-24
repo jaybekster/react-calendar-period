@@ -1,0 +1,29 @@
+$cell-height = 25px
+$cell-width = 25px
+
+.calendar
+    font-size: 0
+    display inline-block
+    vertical-align top
+
+    &__title
+        margin: 0 0 15px
+
+        &__month
+            text-transform: capitalize
+
+    &__dayname
+    &__date
+        width: $cell-width
+        height: $cell-height
+        display: inline-block
+
+    &__dayname
+        font-size: 10px
+        text-transform: uppercase
+
+    &__date
+        font-size: 14px
+
+    & + &
+        margin-left: 34px
