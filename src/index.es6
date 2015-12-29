@@ -11,7 +11,8 @@ class Calendar extends React.Component {
     constructor() {
         super();
         this.state = {
-            month: moment()
+            month: moment(),
+            isActive: false
         }
     }
     render() {
@@ -19,13 +20,14 @@ class Calendar extends React.Component {
             <div className="calendar">
                 <div>{this.renderMonthLabel()}</div>
                 <div>{this.renderDayNames()}</div>
-                <div>{this.renderWeeks()}</div>
+                <div onMouseDown={this.startSelect} onMouseUp={this.endSelect}>{this.renderWeeks()}</div>
             </div>
         )
     }
     componentWillReceiveProps(nextProps) {
         this.setState({
-            month: nextProps.month
+            month: nextProps.month,
+            isActive: nextProps.isActive
         });
     }
     componentDidMount() {
@@ -59,18 +61,22 @@ class Calendar extends React.Component {
 
         while (!done) {
             weeks.push(
-                <Week week={date.clone()} key={date.toString()} mouseEnter={this.mouseEnterDate} mouseLeave={this.mouseLeaveDate}/>
+                <Week isActive={this.state.isActive} week={date.clone()} key={date.toString()}/>
             );
             date.add(1, 'w');
             done = monthIndex !== date.month();
         }
         return weeks;
     }
-    mouseEnterDate() {
-
+    startSelect() {
+        this.setState({
+            isActive: true
+        });
     }
-    mouseLeaveDate() {
-
+    endSelect() {
+        this.setState({
+            isActive: false
+        });
     }
 };
 
@@ -84,8 +90,7 @@ class Week extends React.Component {
             days.push(
                 <span
                     className="calendar__date"
-                    onMouseenter={this.props.mouseEnter}
-                    onMouseleave={this.props.mouseLeave}
+                    onMouseEnter={this.mouseEnterDate}
                     key={date.toString()}
                 >{date.format('D')}</span>
             )
@@ -93,7 +98,17 @@ class Week extends React.Component {
         }
         return <div>{days}</div>
     }
+    mouseEnterDate(e) {
+        if (this.props.isActive) {
+            e.target.classList.add('calendar__date_selected');
+        }
+    }
+    mouseLeaveDate() {
+
+    }
 };
+
+autobind(Week);
 
 class CalendarPeriod extends React.Component {
     constructor() {
@@ -116,7 +131,7 @@ class CalendarPeriod extends React.Component {
     }
     nextMonth() {
         this.setState({
-            date: this.state.date.clone().add(1, 'months')
+            date: this.state.date.add(1, 'months')
         });
     }
     render() {
