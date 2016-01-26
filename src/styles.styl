@@ -1,13 +1,34 @@
 $cell-height = 25px
 $cell-width = 25px
 
+.calendar-period
+
+    &__navigation
+        -webkit-user-select: none
+
+    &__arrow
+        cursor pointer
+
 .calendar
     font-size: 0
-    display inline-block
-    vertical-align top
+    display: inline-block
+    vertical-align: top
+    user-select: none
+    -webkit-user-select: none
+    position: relative
+    z-index: 0
+
+    th:first-child,
+    td:first-child,
+    th:last-child,
+    td:last-child {
+        width: 25px;
+    }
 
     &__title
+        text-align: center
         margin: 0 0 15px
+        font-size: 14px
 
         &__month
             text-transform: capitalize
@@ -17,6 +38,11 @@ $cell-width = 25px
         width: $cell-width
         height: $cell-height
         display: inline-block
+        text-align: center
+
+    &__date
+        line-height: $cell-height
+        cursor: pointer
 
     &__dayname
         font-size: 10px
@@ -24,6 +50,20 @@ $cell-width = 25px
 
     &__date
         font-size: 14px
+
+        &_selected
+            background-image: linear-gradient(to right, #d9f3ff 0, #d9f3ff 100%)
+
+        &_selecting
+            background-image: linear-gradient(to right, #80d5ff 0, #80d5ff 100%)
+
+        &_removing
+            background-image: linear-gradient(to right, #fb4b5b 0, #fb4b5b 100%)
+
+        &_outdate
+            opacity 0
+        &_past
+            color: #858585
 
     & + &
         margin-left: 34px

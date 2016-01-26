@@ -1,6 +1,5 @@
 var path = require('path'),
-    webpack = require('webpack'),
-    BowerWebpackPlugin = require('bower-webpack-plugin');
+    webpack = require('webpack');
 
 module.exports = {
     entry: './src/index.es6',
@@ -20,7 +19,8 @@ module.exports = {
                     ],
                     plugins: [
                         'babel-plugin-external-helpers-2',
-                        'babel-plugin-transform-runtime'
+                        'babel-plugin-transform-runtime',
+                        'transform-class-properties'
                     ]
                 }
             }, {
@@ -29,13 +29,6 @@ module.exports = {
             }
         ]
     },
-    plugins: [
-        new BowerWebpackPlugin({
-            modulesDirectories: ['bower_components'],
-            manifestFiles: ['bower.json', '.bower.json'],
-            includes: /.*/
-        })
-    ],
     resolve: {
         root: [
             path.join(__dirname, './src')
