@@ -9,7 +9,10 @@ import 'moment-range'
 class CalendarPeriod extends Component {
     state = {
         date: moment(),
-        selected: new Set()
+        selected: new Set(),
+        period: {},
+        selectingRange: new Set(),
+        action: true
     };
 
     componentDidMount() {
@@ -18,19 +21,15 @@ class CalendarPeriod extends Component {
             selected: new Set(this.props.selected)
         });
     }
-    changeSelected(date, del) {
-        var selected = this.state.selected;
-        if (del) {
-            let index = selected.indexOf(date);
-            if (index > -1) {
-                selected.splice(index, 1);
-            }
-        } else {
-            selected.push(date);
-            this.setState({
-                selected: selected
-            })
-        }
+    changeSelected(datesArray, addition) {
+        debugger;
+        this.setState({
+            selected: new Set(
+                addition
+                ? [...this.state.selected, ...datesArray]
+                : Array.from(this.state.selected).filter((value) => !datesArray.has(value))
+            )
+        });
     }
     prevMonth() {
         this.setState({
@@ -42,16 +41,69 @@ class CalendarPeriod extends Component {
             date: this.state.date.add(1, 'months')
         });
     }
+
+    onSelect(date) {
+        const period = {
+            start: this.state.period.start,
+            end: date
+        };
+        const range = moment.range(Math.min(period.start, period.end), Math.max(period.start, period.end));
+        const selectingRange = new Set();
+
+        if (period.start.isSame(period.end)) {
+            let dateString = date.format('YYYY-MM-DD');
+            selectingRange.add(dateString);
+        } else {
+            range.by('days', (moment) => {
+                var dateString = moment.format('YYYY-MM-DD');
+                selectingRange.add(dateString);
+            })
+        }
+
+        this.setState({
+            selectingRange,
+            period: period
+        });
+    }
+    onStartSelect(date) {
+        this.setState({
+            isSelecting: true,
+            period: {
+                start: date,
+                end: date
+            },
+            selectingRange: new Set([date.format('YYYY-MM-DD')]),
+            action: !this.state.selected.has(date.format('YYYY-MM-DD'))
+        });
+    }
+    onEndSelect() {
+        this.setState({
+            selected: new Set(
+                this.state.action
+                ? [...this.state.selected, ...this.state.selectingRange]
+                : Array.from(this.state.selected).filter((value) => !this.state.selectingRange.has(value))
+            ),
+            isSelecting: false,
+            selectingRange: new Set()
+        });
+    }
+
+
     render() {
         var monthNodes = [];
         for (let i = 0; i < this.props.count; i += 1) {
-            let monthDate = this.state.date.clone().add(i, 'month'),
-                range = moment.range(monthDate.clone().startOf('month'), monthDate.clone().endOf('month')),
-                selected = new Set(Array.from(this.state.selected).filter(function(date) {
-                    return moment(date).within(range);
-                }));
             monthNodes.push(
-                <Calendar key={i} month={monthDate.clone()} selected={selected} onSelect={this.changeSelected}/>
+                <Calendar
+                    key={i}
+                    month={this.state.date.clone().add(i, 'month')}
+                    selected={this.state.selected}
+                    onSelect={this.onSelect}
+                    onStartSelect={this.onStartSelect}
+                    onEndSelect={this.onEndSelect}
+                    isSelecting={this.state.isSelecting}
+                    action={this.state.action}
+                    selectingRange={this.state.selectingRange}
+                />
             );
         }
         return (
@@ -78,73 +130,19 @@ class CalendarPeriodHeader extends Component {
 
 class Calendar extends Component {
     state = {
-        month: moment().clone(),
-        selected: new Set(this.props.selected),
-        period: {},
-        selectingRange: new Set(),
-        action: 1,
         monthArray: []
     };
 
     render() {
         return (
             <div className="calendar">
-                <MonthHeader month={this.state.month}/>
+                <MonthHeader month={this.props.month}/>
                 <WeekHeader/>
                 <div>{this.renderWeeks()}</div>
             </div>
         )
     }
-    onSelect(date) {
-        const period = {
-            start: moment(Math.min(this.state.period.start, date)),
-            end: moment(Math.max(this.state.period.start, date))
-        };
-        const range = moment.range(period.start, period.end);
-        const selectingRange = new Set();
 
-        if (period.start.isSame(period.end)) {
-            let dateString = date.format('YYYY-MM-DD');
-            if (this.state.action) {
-                selectingRange.add(dateString);
-            } else {
-                selectingRange.delete(dateString);
-            }
-        } else {
-            range.by('days', (moment) => {
-                var dateString = moment.format('YYYY-MM-DD');
-                if (this.state.action) {
-                    selectingRange.add(dateString);
-                } else {
-                    selectingRange.delete(dateString);
-                }
-            })
-        }
-
-        this.setState({
-            selectingRange,
-            period: period
-        });
-    }
-    onStartSelect(date) {
-        var isExist = this.state.selected.has(date.format('YYYY-MM-DD'));
-        this.setState({
-            isSelecting: true,
-            period: {
-                start: date,
-                end: date
-            },
-            selectingRange: new Set([date.format('YYYY-MM-DD')]),
-            action: !isExist
-        });
-    }
-    onEndSelect() {
-        this.setState({
-            isSelecting: false,
-            selected: new Set([...this.state.selectingRange]),
-            selectingRange: new Set()
-        });
-    }
     componentWillReceiveProps(nextProps) {
         var monthArray = [],
             monthRange = moment.range(
@@ -165,8 +163,6 @@ class Calendar extends Component {
         });
 
         this.setState({
-            month: nextProps.month.clone(),
-            selected: new Set(nextProps.selected),
             monthArray: monthArray
         });
     }
@@ -174,24 +170,22 @@ class Calendar extends Component {
         return this.state.monthArray.reduce((result, weekArray, weekIndex) => {
             result.push(
                 <Week
-                    month={this.state.month}
+                    month={this.props.month}
                     week={weekArray}
                     key={weekIndex}
-                    selected={this.state.selected}
-                    selectingRange={this.state.selectingRange}
-                    onSelect={this.onSelect}
-                    onStartSelect={this.onStartSelect}
-                    onEndSelect={this.onEndSelect}
-                    isSelecting={this.state.isSelecting}
-                    action={this.state.action}
+                    selected={this.props.selected}
+                    selectingRange={this.props.selectingRange}
+                    onSelect={this.props.onSelect}
+                    onStartSelect={this.props.onStartSelect}
+                    onEndSelect={this.props.onEndSelect}
+                    isSelecting={this.props.isSelecting}
+                    action={this.props.action}
                 />
             );
             return result;
         }, []);
     }
 };
-
-autobind(Calendar);
 
 class MonthHeader extends Component {
     render() {
@@ -240,14 +234,9 @@ class Week extends Component {
     }
 };
 
-autobind(Week);
-
 class WeekDay extends Component {
     getClassNames() {
         var classList = ['calendar__date'];
-        if (this.props.date.format('YYYY-MM-DD') === '2016-02-14') {
-            // debugger;
-        }
         if (this.props.selectingRange.has(this.props.date.format('YYYY-MM-DD'))) {
             if (this.props.action) {
                classList.push('calendar__date_selecting');
@@ -264,7 +253,6 @@ class WeekDay extends Component {
         if (this.props.isPassive) {
             return;
         }
-        const newState = {};
 
         switch (event.type) {
             case 'mouseup':
@@ -279,8 +267,6 @@ class WeekDay extends Component {
                 this.props.onStartSelect();
                 break;
         }
-
-        this.setState(newState);
     }
 
     render() {
