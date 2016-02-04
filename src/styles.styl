@@ -2,14 +2,33 @@ $cell-height = 25px
 $cell-width = 25px
 
 .calendar-period
+    position: relative
+    display inline-block
 
     &__navigation
         -webkit-user-select: none
+        position absolute
+        left 0
+        right 0
+        z-index 1
 
     &__arrow
-        cursor pointer
+        cursor: pointer
+
+        &_prev
+            float left
+
+            &:after
+                content "\3c";
+
+        &_next
+            float right
+
+            &:after
+                content "\3e"
 
 .calendar
+    cursor: default
     font-size: 0
     display: inline-block
     vertical-align: top
@@ -42,7 +61,6 @@ $cell-width = 25px
 
     &__date
         line-height: $cell-height
-        cursor: pointer
 
     &__dayname
         font-size: 10px
@@ -60,10 +78,14 @@ $cell-width = 25px
         &_removing
             background-image: linear-gradient(to right, #fb4b5b 0, #fb4b5b 100%)
 
-        &_outdate
+        &_outer
             opacity 0
+
         &_past
             color: #858585
+
+        &_availiable
+            cursor: pointer
 
     & + &
         margin-left: 34px

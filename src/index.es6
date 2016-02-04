@@ -22,7 +22,6 @@ class CalendarPeriod extends Component {
         });
     }
     changeSelected(datesArray, addition) {
-        debugger;
         this.setState({
             selected: new Set(
                 addition
@@ -121,8 +120,8 @@ class CalendarPeriodHeader extends Component {
     render() {
         return (
             <div className="calendar-period__navigation">
-                <div className="calendar-period__arrow calendar-period__arrow_prev" onClick={this.props.prevMonth}>Prev</div>
-                <div className="calendar-period__arrow calendar-period__arrow_next" onClick={this.props.nextMonth}>Next</div>
+                <div className="calendar-period__arrow calendar-period__arrow_prev" onClick={this.props.prevMonth}></div>
+                <div className="calendar-period__arrow calendar-period__arrow_next" onClick={this.props.nextMonth}></div>
             </div>
         );
     }
@@ -217,6 +216,7 @@ class Week extends Component {
             return (
                 <WeekDay
                     key={weekDayIndex}
+                    month={this.props.month}
                     date={weekDayObj}
                     onSelect={this.props.onSelect.bind(this, weekDayObj)}
                     onStartSelect={this.props.onStartSelect.bind(this, weekDayObj)}
@@ -236,30 +236,42 @@ class Week extends Component {
 
 class WeekDay extends Component {
     getClassNames() {
-        var classList = ['calendar__date'];
-        if (this.props.selectingRange.has(this.props.date.format('YYYY-MM-DD'))) {
-            if (this.props.action) {
-               classList.push('calendar__date_selecting');
-           } else {
-                classList.push('calendar__date_removing');
-           }
-        } else if (this.props.selected.has(this.props.date.format('YYYY-MM-DD'))) {
-            classList.push('calendar__date_selected');
+        var classList = ['calendar__date'],
+            date = this.props.date,
+            dateStr = date.format('YYYY-MM-DD'),
+            isPast = date < moment(),
+            isOuter = date < this.props.month.startOf('month') || date > this.props.month.endOf('month');
+
+        if (isOuter) {
+            classList.push('calendar__date_outer');
+        } else if (isPast) {
+            classList.push('calendar__date_past');
+        } else {
+            classList.push('calendar__date_availiable');
+            if (this.props.selectingRange.has(dateStr)) {
+                if (this.props.action) {
+                   classList.push('calendar__date_selecting');
+               } else {
+                    classList.push('calendar__date_removing');
+               }
+            } else if (this.props.selected.has(dateStr)) {
+                classList.push('calendar__date_selected');
+            }
         }
+
         return classList;
     }
 
     handleMouseEvent(event) {
-        if (this.props.isPassive) {
-            return;
-        }
+        var isOuter = this._date.classList.contains('calendar__date_outer'),
+            isPast = this._date.classList.contains('calendar__date_past');
 
         switch (event.type) {
             case 'mouseup':
                 this.props.onEndSelect();
                 break;
             case 'mouseenter':
-                if (this.props.isSelecting) {
+                if (this.props.isSelecting && !isOuter && !isPast) {
                     this.props.onSelect();
                 }
                 break;
@@ -271,7 +283,7 @@ class WeekDay extends Component {
 
     render() {
         return (
-            <span
+            <span ref={(c) => this._date = c}
                 className={this.getClassNames().join(' ')}
                 onMouseEnter={this.handleMouseEvent}
                 onMouseLeave={this.handleMouseEvent}
