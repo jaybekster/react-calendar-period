@@ -4,7 +4,8 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import autobind from 'autobind-decorator';
 import moment from 'moment';
-import 'moment-range'
+import 'moment-range';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class CalendarPeriod extends Component {
     state = {
@@ -91,10 +92,11 @@ class CalendarPeriod extends Component {
     render() {
         var monthNodes = [];
         for (let i = 0; i < this.props.count; i += 1) {
+            let newDate = this.state.date.clone().add(i, 'month');
             monthNodes.push(
                 <Calendar
-                    key={i}
-                    month={this.state.date.clone().add(i, 'month')}
+                    key={newDate.format('YYYY-MM')}
+                    month={newDate}
                     selected={this.state.selected}
                     onSelect={this.onSelect}
                     onStartSelect={this.onStartSelect}
@@ -128,9 +130,6 @@ class CalendarPeriodHeader extends Component {
 }
 
 class Calendar extends Component {
-    state = {
-        monthArray: []
-    };
 
     render() {
         return (
@@ -142,11 +141,11 @@ class Calendar extends Component {
         )
     }
 
-    componentWillReceiveProps(nextProps) {
+    generateMonthArray(month) {
         var monthArray = [],
             monthRange = moment.range(
-                nextProps.month.clone().startOf('month').startOf('week'),
-                nextProps.month.clone().endOf('month').endOf('week')
+                month.clone().startOf('month').startOf('week'),
+                month.clone().endOf('month').endOf('week')
             );
 
         monthRange.by('days', function(momentDay) {
@@ -161,12 +160,11 @@ class Calendar extends Component {
             weekArray.push(momentDay);
         });
 
-        this.setState({
-            monthArray: monthArray
-        });
+        return monthArray;
     }
+
     renderWeeks() {
-        return this.state.monthArray.reduce((result, weekArray, weekIndex) => {
+        return this.generateMonthArray(this.props.month).reduce((result, weekArray, weekIndex) => {
             result.push(
                 <Week
                     month={this.props.month}
@@ -184,6 +182,7 @@ class Calendar extends Component {
             return result;
         }, []);
     }
+
 };
 
 class MonthHeader extends Component {
