@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import moment from 'moment';
 import autobind from 'autobind-decorator';
 import CalendarPeriodHeader from 'calendar-period-header';
@@ -12,6 +12,8 @@ class CalendarPeriod extends Component {
         selectingRange: new Set(),
         action: true
     };
+
+    static propTypes = {};
 
     componentDidMount() {
         this.setState({
