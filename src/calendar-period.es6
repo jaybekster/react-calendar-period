@@ -5,22 +5,34 @@ import CalendarPeriodHeader from 'calendar-period-header';
 import Calendar from 'calendar';
 
 class CalendarPeriod extends Component {
+    static propTypes = {
+        now: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+            PropTypes.instanceOf(Date),
+            PropTypes.instanceOf(moment)
+        ]),
+        now: PropTypes.instanceOf(moment),
+        selected: PropTypes.array,
+        count: PropTypes.number
+    };
+
     state = {
         date: moment(),
         selected: new Set(),
         period: {},
         selectingRange: new Set(),
-        action: true
+        action: true,
+        isSelecting: false
     };
-
-    static propTypes = {};
 
     componentDidMount() {
         this.setState({
-            date: this.props.now,
+            date: moment(this.props.now),
             selected: new Set(this.props.selected)
         });
     }
+
     changeSelected(datesArray, addition) {
         this.setState({
             selected: new Set(
@@ -30,11 +42,13 @@ class CalendarPeriod extends Component {
             )
         });
     }
+
     prevMonth() {
         this.setState({
             date: this.state.date.subtract(1, 'months')
         });
     }
+
     nextMonth() {
         this.setState({
             date: this.state.date.add(1, 'months')
@@ -64,6 +78,7 @@ class CalendarPeriod extends Component {
             period: period
         });
     }
+
     onStartSelect(date) {
         this.setState({
             isSelecting: true,
@@ -75,6 +90,7 @@ class CalendarPeriod extends Component {
             action: !this.state.selected.has(date.format('YYYY-MM-DD'))
         });
     }
+
     onEndSelect() {
         this.setState({
             selected: new Set(
@@ -86,7 +102,6 @@ class CalendarPeriod extends Component {
             selectingRange: new Set()
         });
     }
-
 
     render() {
         var monthNodes = [];

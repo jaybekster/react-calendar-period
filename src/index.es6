@@ -10,7 +10,7 @@ import CalendarPeriod from 'calendar-period';
 
 moment.locale('ru');
 
-render.render(
+render(
     <CalendarPeriod now={moment()} count={3} selected={['2016-01-04','2016-02-12', '2016-01-02']}/>,
     document.querySelector('#content')
 );

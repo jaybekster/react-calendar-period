@@ -1,8 +1,19 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import autobind from 'autobind-decorator';
 import moment from 'moment';
 
 class WeekDay extends Component {
+    static propTypes = {
+        date: PropTypes.instanceOf(moment),
+        month: PropTypes.instanceOf(moment),
+        selectingRange: PropTypes.instanceOf(Set),
+        selected: PropTypes.instanceOf(Set),
+        onSelect: PropTypes.func,
+        onStartSelect: PropTypes.func,
+        onEndSelect: PropTypes.func,
+        action: PropTypes.bool
+    };
+
     getClassNames() {
         var classList = ['calendar__date'],
             date = this.props.date,

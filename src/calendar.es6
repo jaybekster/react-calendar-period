@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import MonthHeader from 'month-header';
 import WeekHeader from 'week-header';
 import Week from 'week';
@@ -6,16 +6,15 @@ import moment from 'moment';
 import 'moment-range';
 
 class Calendar extends Component {
-
-    render() {
-        return (
-            <div className="calendar">
-                <MonthHeader month={this.props.month}/>
-                <WeekHeader/>
-                <div>{this.renderWeeks()}</div>
-            </div>
-        )
-    }
+    static propTypes = {
+        month: PropTypes.instanceOf(moment),
+        selected: PropTypes.instanceOf(Set),
+        onSelect: PropTypes.func,
+        onStartSelect: PropTypes.func,
+        onEndSelect: PropTypes.func,
+        isSelecting: PropTypes.bool,
+        action: PropTypes.bool
+    };
 
     generateMonthArray(month) {
         var monthArray = [],
@@ -59,6 +58,15 @@ class Calendar extends Component {
         }, []);
     }
 
+    render() {
+        return (
+            <div className="calendar">
+                <MonthHeader month={this.props.month}/>
+                <WeekHeader/>
+                <div>{this.renderWeeks()}</div>
+            </div>
+        )
+    }
 };
 
 export default Calendar;
