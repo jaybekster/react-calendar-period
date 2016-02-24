@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import moment from 'moment';
+import moment from './moment';
 
 class MonthHeader extends Component {
     static propTypes = {

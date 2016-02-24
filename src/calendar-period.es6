@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import moment from 'moment';
+import moment from './moment';
 import autobind from 'autobind-decorator';
 import CalendarPeriodHeader from 'calendar-period-header';
 import Calendar from 'calendar';

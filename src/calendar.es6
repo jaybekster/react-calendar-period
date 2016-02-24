@@ -2,8 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import MonthHeader from 'month-header';
 import WeekHeader from 'week-header';
 import Week from 'week';
-import moment from 'moment';
-import 'moment-range';
+import moment from './moment';
+
+const firstWeekDayNumber = moment.localeData()._week.dow;
 
 class Calendar extends Component {
     static propTypes = {
@@ -26,7 +27,7 @@ class Calendar extends Component {
         monthRange.by('days', function(momentDay) {
             var weekArray,
                 day = momentDay.day();
-            if (day === 1) {
+            if (day === firstWeekDayNumber) {
                 weekArray = [];
                 monthArray.push(weekArray);
             } else {

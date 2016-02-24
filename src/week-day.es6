@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import autobind from 'autobind-decorator';
-import moment from 'moment';
+import moment from './moment';
 
 class WeekDay extends Component {
     static propTypes = {

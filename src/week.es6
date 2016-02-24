@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import WeekDay from 'week-day';
-import moment from 'moment';
+import moment from './moment';
 
 class Week extends Component {
     static propTypes = {
