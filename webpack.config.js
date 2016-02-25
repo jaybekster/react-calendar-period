@@ -31,6 +31,7 @@ module.exports = {
     },
     resolve: {
         root: [
+            path.join(__dirname, './node_modules'),
             path.join(__dirname, './src')
         ],
         extensions: ['', '.js', '.es6']

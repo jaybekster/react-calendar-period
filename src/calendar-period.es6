@@ -12,7 +12,6 @@ class CalendarPeriod extends Component {
             PropTypes.instanceOf(Date),
             PropTypes.instanceOf(moment)
         ]),
-        now: PropTypes.instanceOf(moment),
         selected: PropTypes.array,
         count: PropTypes.number
     };

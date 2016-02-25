@@ -43,16 +43,9 @@ class Calendar extends Component {
         return this.generateMonthArray(this.props.month).reduce((result, weekArray, weekIndex) => {
             result.push(
                 <Week
-                    month={this.props.month}
+                    {...this.props}
                     week={weekArray}
                     key={weekIndex}
-                    selected={this.props.selected}
-                    selectingRange={this.props.selectingRange}
-                    onSelect={this.props.onSelect}
-                    onStartSelect={this.props.onStartSelect}
-                    onEndSelect={this.props.onEndSelect}
-                    isSelecting={this.props.isSelecting}
-                    action={this.props.action}
                 />
             );
             return result;
