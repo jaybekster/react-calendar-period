@@ -4,15 +4,9 @@ import moment from './moment';
 
 class Week extends Component {
     static propTypes = {
-        month: PropTypes.instanceOf(moment),
-        selected: PropTypes.instanceOf(Set),
         onSelect: PropTypes.func,
         onStartSelect: PropTypes.func,
-        onEndSelect: PropTypes.func,
-        isSelecting: PropTypes.bool,
-        action: PropTypes.bool,
-        isSelected: PropTypes.bool,
-        selectingRange: PropTypes.instanceOf(Set)
+        isSelecting: PropTypes.bool
     };
 
     render() {
