@@ -4,7 +4,7 @@ import moment from './moment';
 class MonthHeader extends Component {
     static propTypes = {
         month: PropTypes.instanceOf(moment)
-    };
+    }
 
     render() {
         return (

@@ -7,7 +7,7 @@ class Week extends Component {
         onSelect: PropTypes.func,
         onStartSelect: PropTypes.func,
         isSelecting: PropTypes.bool
-    };
+    }
 
     render() {
         var days = this.props.week.map((weekDayObj, weekDayIndex) => {

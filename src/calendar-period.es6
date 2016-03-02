@@ -14,16 +14,19 @@ class CalendarPeriod extends Component {
         ]),
         selected: PropTypes.array,
         count: PropTypes.number
-    };
+    }
 
-    state = {
-        date: moment(),
-        selected: new Set(),
-        period: {},
-        selectingRange: new Set(),
-        action: true,
-        isSelecting: false
-    };
+    constructor(props) {
+        super(props)
+        this.state = {
+            date: moment(),
+            selected: new Set(),
+            period: {},
+            selectingRange: new Set(),
+            action: true,
+            isSelecting: false
+        };
+    }
 
     componentDidMount() {
         this.setState({

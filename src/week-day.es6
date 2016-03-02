@@ -12,7 +12,7 @@ class WeekDay extends Component {
         onStartSelect: PropTypes.func,
         onEndSelect: PropTypes.func,
         action: PropTypes.bool
-    };
+    }
 
     getClassNames() {
         var classList = ['calendar__date'],
