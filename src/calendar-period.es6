@@ -12,12 +12,21 @@ class CalendarPeriod extends Component {
             PropTypes.instanceOf(Date),
             PropTypes.instanceOf(moment)
         ]),
-        selected: PropTypes.array,
         count: PropTypes.number
     }
 
+    static childContextTypes = {
+        onSelect: PropTypes.func,
+        onStartSelect: PropTypes.func,
+        onEndSelect: PropTypes.func,
+        isSelecting: PropTypes.bool,
+        selected: PropTypes.instanceOf(Set),
+        selectingRange: PropTypes.instanceOf(Set),
+        action: PropTypes.bool
+    }
+
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             date: moment(),
             selected: new Set(),
@@ -25,6 +34,18 @@ class CalendarPeriod extends Component {
             selectingRange: new Set(),
             action: true,
             isSelecting: false
+        };
+    }
+
+    getChildContext() {
+        return {
+            onSelect: this.onSelect,
+            onStartSelect: this.onStartSelect,
+            onEndSelect: this.onEndSelect,
+            isSelecting: this.state.isSelecting,
+            action: this.state.action,
+            selectingRange: this.state.selectingRange,
+            selected : this.state.selected
         };
     }
 
@@ -113,13 +134,6 @@ class CalendarPeriod extends Component {
                 <Calendar
                     key={newDate.format('YYYY-MM')}
                     month={newDate}
-                    selected={this.state.selected}
-                    onSelect={this.onSelect}
-                    onStartSelect={this.onStartSelect}
-                    onEndSelect={this.onEndSelect}
-                    isSelecting={this.state.isSelecting}
-                    action={this.state.action}
-                    selectingRange={this.state.selectingRange}
                 />
             );
         }

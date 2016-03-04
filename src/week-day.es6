@@ -5,13 +5,17 @@ import moment from './moment';
 class WeekDay extends Component {
     static propTypes = {
         date: PropTypes.instanceOf(moment),
-        month: PropTypes.instanceOf(moment),
-        selectingRange: PropTypes.instanceOf(Set),
-        selected: PropTypes.instanceOf(Set),
+        month: PropTypes.instanceOf(moment)
+    }
+
+    static contextTypes = {
         onSelect: PropTypes.func,
         onStartSelect: PropTypes.func,
         onEndSelect: PropTypes.func,
-        action: PropTypes.bool
+        isSelecting: PropTypes.bool,
+        action: PropTypes.bool,
+        selectingRange: PropTypes.instanceOf(Set),
+        selected: PropTypes.instanceOf(Set)
     }
 
     getClassNames() {
@@ -27,13 +31,13 @@ class WeekDay extends Component {
             classList.push('calendar__date_past');
         } else {
             classList.push('calendar__date_availiable');
-            if (this.props.selectingRange.has(dateStr)) {
-                if (this.props.action) {
+            if (this.context.selectingRange.has(dateStr)) {
+                if (this.context.action) {
                    classList.push('calendar__date_selecting');
                } else {
                     classList.push('calendar__date_removing');
                }
-            } else if (this.props.selected.has(dateStr)) {
+            } else if (this.context.selected.has(dateStr)) {
                 classList.push('calendar__date_selected');
             }
         }
@@ -47,22 +51,24 @@ class WeekDay extends Component {
 
         switch (event.type) {
             case 'mouseup':
-                this.props.onEndSelect();
+                this.context.onEndSelect(this.props.date);
                 break;
             case 'mouseenter':
-                if (this.props.isSelecting && !isOuter && !isPast) {
-                    this.props.onSelect();
+                if (this.context.isSelecting && !isOuter && !isPast) {
+                    this.context.onSelect(this.props.date);
                 }
                 break;
             case 'mousedown':
-                this.props.onStartSelect();
+                this.context.onStartSelect(this.props.date);
+                break;
+            default:
                 break;
         }
     }
 
     render() {
         return (
-            <span ref={(c) => this._date = c}
+            <span
                 className={this.getClassNames().join(' ')}
                 onMouseEnter={this.handleMouseEvent}
                 onMouseLeave={this.handleMouseEvent}

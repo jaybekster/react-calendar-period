@@ -8,7 +8,7 @@ const firstWeekDayNumber = moment.localeData()._week.dow;
 
 class Calendar extends Component {
     static propTypes = {
-        month: PropTypes.instanceOf(moment),
+        month: PropTypes.instanceOf(moment)
     }
 
     generateMonthArray(month) {
@@ -37,7 +37,7 @@ class Calendar extends Component {
         return this.generateMonthArray(this.props.month).reduce((result, weekArray, weekIndex) => {
             result.push(
                 <Week
-                    {...this.props}
+                    month={this.props.month}
                     week={weekArray}
                     key={weekIndex}
                 />

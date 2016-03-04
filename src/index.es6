@@ -2,7 +2,6 @@ import 'styles.styl'
 
 import React from 'react'
 import { render } from 'react-dom';
-import classnames from 'classnames';
 
 import CalendarPeriod from 'calendar-period';
 
