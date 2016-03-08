@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import autobind from 'autobind-decorator';
+import classNames from 'classnames';
 import moment from './moment';
 
 class WeekDay extends Component {
@@ -19,47 +20,38 @@ class WeekDay extends Component {
     }
 
     getClassNames() {
-        var classList = ['calendar__date'],
-            date = this.props.date,
-            dateStr = date.format('YYYY-MM-DD'),
-            isPast = date < moment(),
-            isOuter = date < this.props.month.startOf('month') || date > this.props.month.endOf('month');
+        var propsDate = this.props.date,
+            dateStr = propsDate.format('YYYY-MM-DD'),
+            isPast = propsDate < moment(),
+            isOuter = propsDate < this.props.month.startOf('month') || propsDate > this.props.month.endOf('month');
 
-        if (isOuter) {
-            classList.push('calendar__date_outer');
-        } else if (isPast) {
-            classList.push('calendar__date_past');
-        } else {
-            classList.push('calendar__date_availiable');
-            if (this.context.selectingRange.has(dateStr)) {
-                if (this.context.action) {
-                   classList.push('calendar__date_selecting');
-               } else {
-                    classList.push('calendar__date_removing');
-               }
-            } else if (this.context.selected.has(dateStr)) {
-                classList.push('calendar__date_selected');
-            }
-        }
-
-        return classList;
+        return classNames('calendar__date', {
+            'calendar__date_outer': isOuter,
+            'calendar__date_past': !isOuter && isPast,
+            'calendar__date_availiable': !(isOuter && isPast),
+            'calendar__date_selecting': this.context.selectingRange.has(dateStr) && this.context.action,
+            'calendar__date_removing': this.context.selectingRange.has(dateStr) && !this.context.action,
+            'calendar__date_selected': !this.context.selectingRange.has(dateStr) && this.context.selected.has(dateStr)
+        });
     }
 
     handleMouseEvent(event) {
-        var isOuter = this._date.classList.contains('calendar__date_outer'),
-            isPast = this._date.classList.contains('calendar__date_past');
+        var containerNode = this.refs.container,
+            isOuter = containerNode.classList.contains('calendar__date_outer'),
+            isPast = containerNode.classList.contains('calendar__date_past'),
+            propsDate = this.props.date;
 
         switch (event.type) {
             case 'mouseup':
-                this.context.onEndSelect(this.props.date);
+                this.context.onEndSelect(propsDate);
                 break;
             case 'mouseenter':
                 if (this.context.isSelecting && !isOuter && !isPast) {
-                    this.context.onSelect(this.props.date);
+                    this.context.onSelect(propsDate);
                 }
                 break;
             case 'mousedown':
-                this.context.onStartSelect(this.props.date);
+                this.context.onStartSelect(propsDate);
                 break;
             default:
                 break;
@@ -69,7 +61,8 @@ class WeekDay extends Component {
     render() {
         return (
             <span
-                className={this.getClassNames().join(' ')}
+                ref='container'
+                className={this.getClassNames()}
                 onMouseEnter={this.handleMouseEvent}
                 onMouseLeave={this.handleMouseEvent}
                 onMouseDown={this.handleMouseEvent}
