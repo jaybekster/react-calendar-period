@@ -20,10 +20,9 @@ class WeekDay extends Component {
     }
 
     getClassNames() {
-        var propsDate = this.props.date,
-            dateStr = propsDate.format('YYYY-MM-DD'),
-            isPast = propsDate < moment(),
-            isOuter = propsDate < this.props.month.startOf('month') || propsDate > this.props.month.endOf('month');
+        var dateStr = this.props.date.format('YYYY-MM-DD'),
+            isPast = this.props.isPast,
+            isOuter = this.props.isOuter;
 
         return classNames('calendar__date', {
             'calendar__date_outer': isOuter,
@@ -36,22 +35,17 @@ class WeekDay extends Component {
     }
 
     handleMouseEvent(event) {
-        var containerNode = this.refs.container,
-            isOuter = containerNode.classList.contains('calendar__date_outer'),
-            isPast = containerNode.classList.contains('calendar__date_past'),
-            propsDate = this.props.date;
-
         switch (event.type) {
             case 'mouseup':
-                this.context.onEndSelect(propsDate);
+                this.context.onEndSelect(this.props.date);
                 break;
             case 'mouseenter':
-                if (this.context.isSelecting && !isOuter && !isPast) {
-                    this.context.onSelect(propsDate);
+                if (this.context.isSelecting && !(this.props.isOuter && this.props.isPast)) {
+                    this.context.onSelect(this.props.date);
                 }
                 break;
             case 'mousedown':
-                this.context.onStartSelect(propsDate);
+                this.context.onStartSelect(this.props.date);
                 break;
             default:
                 break;
@@ -61,7 +55,6 @@ class WeekDay extends Component {
     render() {
         return (
             <span
-                ref='container'
                 className={this.getClassNames()}
                 onMouseEnter={this.handleMouseEvent}
                 onMouseLeave={this.handleMouseEvent}

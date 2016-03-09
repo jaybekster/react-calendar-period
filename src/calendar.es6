@@ -32,11 +32,16 @@ class Calendar extends Component {
             result.push(
                 <div key={weekIndex}>
                     {weekArray.map(function(weekDayObj, weekDayIndex) {
+                        var isPast = weekDayObj < moment(),
+                            isOuter = weekDayObj < month.startOf('month') || weekDayObj > month.endOf('month');
+
                         return (
                             <WeekDay
                                 month={month}
                                 key={weekDayIndex}
                                 date={weekDayObj}
+                                isPast={isPast}
+                                isOuter={isOuter}
                             />
                         );
                     })}
