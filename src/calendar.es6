@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import Week from 'week';
+import WeekDay from 'week-day';
 import moment from './moment';
 
 const firstWeekDayNumber = moment.localeData()._week.dow;
@@ -9,7 +9,7 @@ class Calendar extends Component {
         month: PropTypes.instanceOf(moment)
     }
 
-    generateMonthArray(month) {
+    renderWeeks(month) {
         var monthArray = [],
             monthRange = moment.range(
                 month.clone().startOf('month').startOf('week'),
@@ -28,17 +28,19 @@ class Calendar extends Component {
             weekArray.push(momentDay);
         });
 
-        return monthArray;
-    }
-
-    renderWeeks() {
-        return this.generateMonthArray(this.props.month).reduce((result, weekArray, weekIndex) => {
+        return monthArray.reduce(function(result, weekArray, weekIndex) {
             result.push(
-                <Week
-                    month={this.props.month}
-                    week={weekArray}
-                    key={weekIndex}
-                />
+                <div key={weekIndex}>
+                    {weekArray.map(function(weekDayObj, weekDayIndex) {
+                        return (
+                            <WeekDay
+                                month={month}
+                                key={weekDayIndex}
+                                date={weekDayObj}
+                            />
+                        );
+                    })}
+                </div>
             );
             return result;
         }, []);
@@ -57,7 +59,7 @@ class Calendar extends Component {
                         return <span className="calendar__dayname" key={index}>{array[(index + firstWeekDayNumber) % 7]}</span>
                     })}
                 </div>
-                <div>{this.renderWeeks()}</div>
+                <div>{this.renderWeeks(this.props.month)}</div>
             </div>
         )
     }

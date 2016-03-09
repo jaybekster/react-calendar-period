@@ -139,8 +139,8 @@ class CalendarPeriod extends Component {
         return (
             <div className="calendar-period">
                 <div className="calendar-period__navigation">
-                    <div className="calendar-period__arrow calendar-period__arrow_prev" onClick={this.props.prevMonth}></div>
-                    <div className="calendar-period__arrow calendar-period__arrow_next" onClick={this.props.nextMonth}></div>
+                    <div className="calendar-period__arrow calendar-period__arrow_prev" onClick={this.prevMonth}></div>
+                    <div className="calendar-period__arrow calendar-period__arrow_next" onClick={this.nextMonth}></div>
                 </div>
                 {monthNodes}
             </div>
