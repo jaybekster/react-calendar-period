@@ -1,6 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import MonthHeader from 'month-header';
-import WeekHeader from 'week-header';
 import Week from 'week';
 import moment from './moment';
 
@@ -49,8 +47,16 @@ class Calendar extends Component {
     render() {
         return (
             <div className="calendar">
-                <MonthHeader month={this.props.month}/>
-                <WeekHeader/>
+                <div className="calendar__title">
+                    <span className="calendar__title__month">{moment.months()[this.props.month.format('M') - 1]}</span>
+                    ,&nbsp;
+                    <span className="calendar__title__month">{this.props.month.format('YYYY')}</span>
+                </div>
+                <div>
+                    {moment.weekdaysMin().map(function(title, index, array) {
+                        return <span className="calendar__dayname" key={index}>{array[(index + firstWeekDayNumber) % 7]}</span>
+                    })}
+                </div>
                 <div>{this.renderWeeks()}</div>
             </div>
         )

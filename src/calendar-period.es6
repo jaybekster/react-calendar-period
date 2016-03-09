@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import moment from './moment';
 import autobind from 'autobind-decorator';
-import CalendarPeriodHeader from 'calendar-period-header';
 import Calendar from 'calendar';
 
 class CalendarPeriod extends Component {
@@ -139,7 +138,10 @@ class CalendarPeriod extends Component {
         }
         return (
             <div className="calendar-period">
-                <CalendarPeriodHeader nextMonth={this.nextMonth} prevMonth={this.prevMonth}/>
+                <div className="calendar-period__navigation">
+                    <div className="calendar-period__arrow calendar-period__arrow_prev" onClick={this.props.prevMonth}></div>
+                    <div className="calendar-period__arrow calendar-period__arrow_next" onClick={this.props.nextMonth}></div>
+                </div>
                 {monthNodes}
             </div>
         )
