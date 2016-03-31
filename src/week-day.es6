@@ -3,7 +3,8 @@ import autobind from 'autobind-decorator';
 import classNames from 'classnames';
 import moment from './moment';
 
-class WeekDay extends Component {
+@autobind
+export default class WeekDay extends Component {
     static propTypes = {
         date: PropTypes.instanceOf(moment),
         month: PropTypes.instanceOf(moment)
@@ -20,17 +21,19 @@ class WeekDay extends Component {
     }
 
     getClassNames() {
-        var dateStr = this.props.date.format('YYYY-MM-DD'),
+        let dateStr = this.props.date.format('YYYY-MM-DD'),
             isPast = this.props.isPast,
-            isOuter = this.props.isOuter;
+            isOuter = this.props.isOuter,
+            inSelectingRange = this.context.selectingRange.has(dateStr),
+            isAlreadySelected = this.context.selected.has(dateStr);
 
         return classNames('calendar__date', {
             'calendar__date_outer': isOuter,
             'calendar__date_past': !isOuter && isPast,
-            'calendar__date_availiable': !(isOuter && isPast),
-            'calendar__date_selecting': this.context.selectingRange.has(dateStr) && this.context.action,
-            'calendar__date_removing': this.context.selectingRange.has(dateStr) && !this.context.action,
-            'calendar__date_selected': !this.context.selectingRange.has(dateStr) && this.context.selected.has(dateStr)
+            'calendar__date_availiable': !(isPast || isOuter),
+            'calendar__date_selecting': inSelectingRange && this.context.action,
+            'calendar__date_removing': inSelectingRange && !this.context.action,
+            'calendar__date_selected': !inSelectingRange && isAlreadySelected
         });
     }
 
@@ -45,7 +48,9 @@ class WeekDay extends Component {
                 }
                 break;
             case 'mousedown':
-                this.context.onStartSelect(this.props.date);
+                if (!(this.props.isOuter || this.props.isPast)) {
+                    this.context.onStartSelect(this.props.date);
+                }
                 break;
             default:
                 break;
@@ -64,7 +69,3 @@ class WeekDay extends Component {
         )
     }
 }
-
-autobind(WeekDay);
-
-export default WeekDay;

@@ -3,7 +3,8 @@ import moment from './moment';
 import autobind from 'autobind-decorator';
 import Calendar from 'calendar';
 
-class CalendarPeriod extends Component {
+@autobind
+export default class CalendarPeriod extends Component {
     static propTypes = {
         now: PropTypes.oneOfType([
             PropTypes.string,
@@ -24,8 +25,8 @@ class CalendarPeriod extends Component {
         action: PropTypes.bool
     }
 
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
             date: moment(),
             selected: new Set(),
@@ -90,7 +91,7 @@ class CalendarPeriod extends Component {
             selectingRange.add(dateString);
         } else {
             range.by('days', (moment) => {
-                var dateString = moment.format('YYYY-MM-DD');
+                let dateString = moment.format('YYYY-MM-DD');
                 selectingRange.add(dateString);
             })
         }
@@ -126,7 +127,7 @@ class CalendarPeriod extends Component {
     }
 
     render() {
-        var monthNodes = [];
+        let monthNodes = [];
         for (let i = 0; i < this.props.count; i += 1) {
             let newDate = this.state.date.clone().add(i, 'month');
             monthNodes.push(
@@ -147,7 +148,3 @@ class CalendarPeriod extends Component {
         )
     }
 };
-
-autobind(CalendarPeriod);
-
-export default CalendarPeriod;

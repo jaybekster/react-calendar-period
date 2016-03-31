@@ -4,20 +4,20 @@ import moment from './moment';
 
 const firstWeekDayNumber = moment.localeData()._week.dow;
 
-class Calendar extends Component {
+export default class Calendar extends Component {
     static propTypes = {
         month: PropTypes.instanceOf(moment)
     }
 
     renderWeeks(month) {
-        var monthArray = [],
+        let monthArray = [],
             monthRange = moment.range(
                 month.clone().startOf('month').startOf('week'),
                 month.clone().endOf('month').endOf('week')
             );
 
         monthRange.by('days', function(momentDay) {
-            var weekArray,
+            let weekArray,
                 day = momentDay.day();
             if (day === firstWeekDayNumber) {
                 weekArray = [];
@@ -32,7 +32,7 @@ class Calendar extends Component {
             result.push(
                 <div key={weekIndex}>
                     {weekArray.map(function(weekDayObj, weekDayIndex) {
-                        var isPast = weekDayObj < moment(),
+                        let isPast = weekDayObj < moment(),
                             isOuter = weekDayObj < month.startOf('month') || weekDayObj > month.endOf('month');
 
                         return (
@@ -69,5 +69,3 @@ class Calendar extends Component {
         )
     }
 };
-
-export default Calendar;

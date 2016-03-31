@@ -14,13 +14,14 @@ module.exports = {
                 exclude: /node_modules/,
                 query: {
                     presets: [
-                        'babel-preset-es2015',
-                        'babel-preset-react'
+                        'es2015',
+                        'react'
                     ],
                     plugins: [
-                        'babel-plugin-external-helpers-2',
-                        'babel-plugin-transform-runtime',
-                        'transform-class-properties'
+                        'external-helpers-2',
+                        'transform-class-properties',
+                        'transform-decorators-legacy',
+                        'transform-runtime'
                     ]
                 }
             }, {

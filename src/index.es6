@@ -6,6 +6,6 @@ import { render } from 'react-dom';
 import CalendarPeriod from 'calendar-period';
 
 render(
-    <CalendarPeriod now={new Date()} count={3} selected={['2016-01-04','2016-02-12', '2016-01-02']}/>,
+    <CalendarPeriod now={new Date()} count={3} selected={[new Date()]}/>,
     document.querySelector('#content')
 );
